@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de E-mail de Treinamento - Glassmorphism</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffd89b;
+            background: -webkit-linear-gradient(to right, #19547b, #ffd89b);
+            background: linear-gradient(to right, #19547b, #ffd89b);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 216, 155, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(25, 84, 123, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 40%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(25, 84, 123, 0.08) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+            animation: floatingGradient 15s ease-in-out infinite;
+        }
+
+        @keyframes floatingGradient {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(10px, -10px); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .glass-card {
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2.5rem;
+            padding: 3rem 2.5rem;
+            box-shadow: 
+                0 8px 32px 0 rgba(31, 38, 135, 0.2),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -1px 1px 0 rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(20px, 20px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .glass-card:hover {
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 12px 48px 0 rgba(31, 38, 135, 0.25),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.5),
+                inset 0 -1px 1px 0 rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #FF9500 0%, #FFB84D 100%);
+            border-radius: 1.5rem;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 
+                0 8px 24px rgba(255, 149, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.3);
+            font-size: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-text h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+        }
+
+        .header-text p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #444;
+            font-weight: 500;
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .description {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-close {
+            font-family: 'Inter', sans-serif;
+            border: none;
+            border-radius: 1.2rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF9500 0%, #FFB84D 100%);
+            color: white;
+            box-shadow: 
+                0 6px 20px rgba(255, 149, 0, 0.35),
+                inset 0 1px 1px rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 10px 30px rgba(255, 149, 0, 0.45),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.25);
+            color: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(15px);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.35);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 
+                0 4px 12px rgba(255, 255, 255, 0.2),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-close {
+            background: transparent;
+            color: #1a1a1a;
+            padding: 0.5rem;
+            width: 40px;
+            height: 40px;
+        }
+
+        .btn-close:hover:not(:disabled) {
+            background: rgba(255, 149, 0, 0.15);
+            color: #FF9500;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 
+                0 4px 16px rgba(31, 38, 135, 0.1),
+                inset 0 1px 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .info-card:hover {
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.35);
+            transform: translateY(-6px);
+            box-shadow: 
+                0 8px 24px rgba(31, 38, 135, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        }
+
+        .info-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .info-card p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #444;
+            line-height: 1.5;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(25, 84, 123, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 2.5rem;
+            box-shadow: 
+                0 20px 60px 0 rgba(31, 38, 135, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.25);
+            justify-content: flex-end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input,
+        .form-textarea {
+            padding: 0.875rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 1rem;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            color: #1a1a1a;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            transition: all 0.2s ease;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.5;
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(26, 26, 26, 0.6);
+            white-space: pre-wrap;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 149, 0, 0.6);
+            box-shadow: 
+                0 0 0 3px rgba(255, 149, 0, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .form-input:disabled,
+        .form-textarea:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-row-horarios {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .spinner-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            padding: 2rem;
+        }
+
+        .spinner-glass {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 2.5rem;
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2rem;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: 
+                0 12px 40px rgba(31, 38, 135, 0.2),
+                inset 0 1px 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .spinner-icon {
+            animation: spin 2s linear infinite;
+            color: #FF9500;
+            filter: drop-shadow(0 0 12px rgba(255, 149, 0, 0.4));
+            font-size: 3rem;
+        }
+
+        .progress-text {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .progress-label {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .progress-percentage {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FF9500 0%, #FFB84D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #FF9500 0%, #FFB84D 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 16px rgba(255, 149, 0, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 149, 0, 0.35);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 149, 0, 0.55);
+        }
+
+        @media (max-width: 768px) {
+            .glass-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .header-text h1 {
+                font-size: 1.5rem;
+            }
+
+            .modal-content {
+                border-radius: 2rem;
+            }
+
+            .modal-header {
+                padding: 1.5rem;
+            }
+
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+                padding: 1.5rem;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+            }
+
+            .form-row,
+            .form-row-horarios {
+                grid-template-columns: 1fr;
+            }
+
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .glass-card {
+                padding: 1.5rem 1rem;
+            }
+
+            .header-icon {
+                width: 48px;
+                height: 48px;
+            }
+
+            .header-text h1 {
+                font-size: 1.25rem;
+            }
+
+            .modal-header h2 {
+                font-size: 1.25rem;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="glass-card">
+            <div class="card-header">
+                <div class="header-icon">✉️</div>
+                <div class="header-text">
+                    <h1>Gerador de E-mail</h1>
+                    <p>Crie e-mails de treinamento formatados para o Outlook</p>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <p class="description">
+                    Preencha os dados abaixo para gerar um e-mail profissional de lembrete de treinamento. 
+                    O e-mail será aberto no seu cliente de e-mail padrão pronto para envio.
+                </p>
+
+                <button class="btn-primary" id="btnCriar" onclick="abrirModal()">
+                    📤 Criar E-mail
+                </button>
+            </div>
+        </div>
+
+        <div class="info-cards">
+            <div class="info-card">
+                <h3>📋 Fácil</h3>
+                <p>Preencha os campos do formulário</p>
+            </div>
+            <div class="info-card">
+                <h3>✨ Profissional</h3>
+                <p>E-mail formatado e pronto para envio</p>
+            </div>
+            <div class="info-card">
+                <h3>🚀 Rápido</h3>
+                <p>Abra no Outlook em segundos</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Dados do Treinamento</h2>
+                <button class="btn-close" id="btnFechar" onclick="fecharModal()">✕</button>
+            </div>
+
+            <div id="formContainer" class="modal-body">
+                <div class="form-group">
+                    <label for="destinatarios">E-mail do(s) Destinatário(s) *</label>
+                    <textarea
+                        id="destinatarios"
+                        placeholder="Ex: joao@example.com; maria@example.com; pedro@example.com&#10;(Pressione TAB para adicionar outro e-mail)"
+                        class="form-textarea"
+                        rows="3"
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="nomeDestinatario">Nome do Destinatário *</label>
+                    <input
+                        type="text"
+                        id="nomeDestinatario"
+                        placeholder="Ex: João Silva"
+                        class="form-input"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="assunto">Assunto do E-mail *</label>
+                    <input
+                        type="text"
+                        id="assunto"
+                        placeholder="TREINAMENTO | Domínio Sistemas - Módulo [ XXXXXXXX ]"
+                        class="form-input"
+                        value="TREINAMENTO | Domínio Sistemas - Módulo [ "
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="meuNome">Seu Nome</label>
+                    <input
+                        type="text"
+                        id="meuNome"
+                        placeholder="Ivan Alves Ramalho"
+                        class="form-input"
+                        value="Ivan Alves Ramalho"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="modulo">Módulo do Treinamento *</label>
+                    <input
+                        type="text"
+                        id="modulo"
+                        placeholder="Ex: Contabilização de Despesas"
+                        class="form-input"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="data">Data do Treinamento *</label>
+                    <input
+                        type="date"
+                        id="data"
+                        class="form-input"
+                    />
+                </div>
+
+                <div class="form-row-horarios">
+                    <div class="form-group">
+                        <label for="horario">Horário de Início *</label>
+                        <input
+                            type="time"
+                            id="horario"
+                            class="form-input"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="horarioFim">Horário de Término</label>
+                        <input
+                            type="time"
+                            id="horarioFim"
+                            class="form-input"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="local">Local / Plataforma</label>
+                    <input
+                        type="text"
+                        id="local"
+                        placeholder="SALA MICROSOFT TEAMS"
+                        class="form-input"
+                        value="SALA MICROSOFT TEAMS"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="linkTeams">Link de Acesso (Teams/Zoom/etc)</label>
+                    <input
+                        type="url"
+                        id="linkTeams"
+                        placeholder="Ex: https://teams.microsoft.com/l/meetup-join/..."
+                        class="form-input"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="instrutor">Instrutor(a)</label>
+                    <input
+                        type="text"
+                        id="instrutor"
+                        placeholder="Nome do instrutor"
+                        class="form-input"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="telefone">Telefone de Contato</label>
+                    <input
+                        type="tel"
+                        id="telefone"
+                        placeholder="(11) 99664-9967"
+                        class="form-input"
+                        value="(11) 99664-9967"
+                    />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="canalConfirmacao">Canal de Confirmação</label>
+                        <select id="canalConfirmacao" class="form-input">
+                            <option value="e-mail">E-mail</option>
+                            <option value="WhatsApp">WhatsApp</option>
+                            <option value="Telefone">Telefone</option>
+                            <option value="Sistema">Sistema Interno</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dataConfirmacao">Data Limite de Confirmação</label>
+                        <input
+                            type="date"
+                            id="dataConfirmacao"
+                            class="form-input"
+                        />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+                    <button class="btn-primary" id="btnGerar" onclick="gerarEmail()">📤 Gerar E-mail</button>
+                </div>
+            </div>
+
+            <div id="spinnerContainer" style="display: none;">
+                <div class="spinner-container">
+                    <div class="spinner-glass">
+                        <div class="spinner-icon">⏳</div>
+                        <div class="progress-text">
+                            <p class="progress-label">Gerando e-mail...</p>
+                            <p class="progress-percentage" id="progressPercentage">0%</p>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modalOverlay = document.getElementById('modalOverlay');
+        const formContainer = document.getElementById('formContainer');
+        const spinnerContainer = document.getElementById('spinnerContainer');
+        const destinatariosField = document.getElementById('destinatarios');
+        const dataField = document.getElementById('data');
+
+        // Puxar data do dia
+        function definirDataAtual() {
+            const hoje = new Date();
+            const ano = hoje.getFullYear();
+            const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+            const dia = String(hoje.getDate()).padStart(2, '0');
+            dataField.value = `${ano}-${mes}-${dia}`;
+        }
+
+        function abrirModal() {
+            definirDataAtual();
+            modalOverlay.classList.add('active');
+        }
+
+        function fecharModal() {
+            modalOverlay.classList.remove('active');
+            resetarFormulario();
+        }
+
+        function resetarFormulario() {
+            document.getElementById('destinatarios').value = '';
+            document.getElementById('nomeDestinatario').value = '';
+            document.getElementById('assunto').value = 'TREINAMENTO | Domínio Sistemas - Módulo [ ';
+            document.getElementById('meuNome').value = 'Ivan Alves Ramalho';
+            document.getElementById('modulo').value = '';
+            document.getElementById('data').value = '';
+            document.getElementById('horario').value = '';
+            document.getElementById('horarioFim').value = '';
+            document.getElementById('local').value = 'SALA MICROSOFT TEAMS';
+            document.getElementById('linkTeams').value = '';
+            document.getElementById('instrutor').value = '';
+            document.getElementById('telefone').value = '(11) 99664-9967';
+            document.getElementById('canalConfirmacao').value = 'e-mail';
+            document.getElementById('dataConfirmacao').value = '';
+        }
+
+        destinatariosField.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                const value = this.value;
+                
+                const newValue = value.substring(0, start) + '; ' + value.substring(end);
+                this.value = newValue;
+                
+                setTimeout(() => {
+                    this.selectionStart = this.selectionEnd = start + 2;
+                }, 0);
+            }
+        });
+
+        function gerarEmail() {
+            const destinatarios = document.getElementById('destinatarios').value;
+            const nomeDestinatario = document.getElementById('nomeDestinatario').value;
+            const assunto = document.getElementById('assunto').value;
+            const modulo = document.getElementById('modulo').value;
+            const data = document.getElementById('data').value;
+            const horario = document.getElementById('horario').value;
+
+            if (!destinatarios || !nomeDestinatario || !assunto || !modulo || !data || !horario) {
+                alert('Por favor, preencha todos os campos obrigatórios');
+                return;
+            }
+
+            mostrarSpinner();
+            animarProgresso();
+
+            setTimeout(() => {
+                const emailBody = gerarCorpoEmail();
+                const subject = encodeURIComponent(assunto);
+                const body = encodeURIComponent(emailBody);
+                const mailtoLink = `mailto:${destinatarios}?subject=${subject}&body=${body}`;
+
+                setTimeout(() => {
+                    window.location.href = mailtoLink;
+                    fecharModal();
+                    esconderSpinner();
+                }, 500);
+            }, 1500);
+        }
+
+        function gerarCorpoEmail() {
+            const nomeDestinatario = document.getElementById('nomeDestinatario').value;
+            const meuNome = document.getElementById('meuNome').value;
+            const modulo = document.getElementById('modulo').value;
+            const data = document.getElementById('data').value;
+            const horario = document.getElementById('horario').value;
+            const horarioFim = document.getElementById('horarioFim').value;
+            const local = document.getElementById('local').value;
+            const linkTeams = document.getElementById('linkTeams').value;
+            const instrutor = document.getElementById('instrutor').value;
+            const canalConfirmacao = document.getElementById('canalConfirmacao').value;
+            const dataConfirmacao = document.getElementById('dataConfirmacao').value;
+            const telefone = document.getElementById('telefone').value;
+
+            let emailBody = `Prezado(a) ${nomeDestinatario},
+
+Espero que esta mensagem o(a) encontre bem. Venho por meio deste e-mail reforçar o lembrete referente ao treinamento do **Sistema de Contabilidade**, especificamente sobre o módulo **${modulo}**, que está programado para ocorrer conforme as informações abaixo:
+
+📅 Data: ${data}
+🕐 Horário: ${horario} às ${horarioFim}
+📍 Local / Plataforma: ${local}`;
+
+            if (linkTeams) {
+                emailBody += `
+🔗 Link de Acesso: ${linkTeams}`;
+            }
+
+            emailBody += `
+📘 Módulo: ${modulo}
+👤 Instrutor(a): ${instrutor}
+
+Solicitamos, por gentileza, que confirme sua presença até o dia **${dataConfirmacao}**, respondendo a este e-mail ou pelo canal **${canalConfirmacao}**.
+
+Para garantir o melhor aproveitamento do treinamento, recomendamos que os participantes:
+- Acessem o ambiente de treinamento com antecedência de 10 minutos;
+- Tenham em mãos os materiais previamente enviados, caso aplicável;
+- Estejam com o sistema devidamente instalado e configurado em seu dispositivo.
+
+Em caso de dúvidas ou impossibilidade de participação, pedimos que entre em contato conosco o quanto antes para que possamos realizar os devidos ajustes.
+
+Agradecemos sua atenção e colaboração.
+
+Atenciosamente,
+
+**${meuNome}**
+Equipe de Treinamento e Capacitação
+Thomson Reuters – Domínio
+📧 ivan.ramalho@thomsonreuters.com
+📞 ${telefone}
+
+---
+
+> *Este e-mail contém informações confidenciais destinadas exclusivamente ao(s) destinatário(s) acima identificado(s). Caso tenha recebido esta mensagem por engano, por favor, notifique o remetente e exclua-a imediatamente.*`;
+
+            return emailBody;
+        }
+
+        function mostrarSpinner() {
+            formContainer.style.display = 'none';
+            spinnerContainer.style.display = 'block';
+        }
+
+        function esconderSpinner() {
+            spinnerContainer.style.display = 'none';
+            formContainer.style.display = 'flex';
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressPercentage').textContent = '0%';
+        }
+
+        function animarProgresso() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                if (progress >= 90) {
+                    clearInterval(interval);
+                    return;
+                }
+                progress += Math.random() * 30;
+                if (progress > 90) progress = 90;
+                
+                document.getElementById('progressBar').style.width = progress + '%';
+                document.getElementById('progressPercentage').textContent = Math.round(progress) + '%';
+            }, 200);
+        }
+
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                fecharModal();
+            }
+        });
+    </script>
+</body>
+</html>
